@@ -2,7 +2,7 @@
 import { DeckContext } from '../deck/deck';
 import presenterNotesPlugin from '../../utils/remark-rehype-presenter-notes';
 import CodePane, { CodePaneProps } from '../code-pane';
-import unified from 'unified';
+import { unified } from 'unified';
 import styled from 'styled-components';
 import { compose, layout, position } from 'styled-system';
 import remark from 'remark-parse';
@@ -37,6 +37,7 @@ import {
   directiveParserPlugin,
   directivesHandlerPlugin
 } from '../../utils/remark-rehype-directive';
+import * as production from 'react/jsx-runtime';
 
 type MarkdownProps = CommonMarkdownProps & MapAndTemplate;
 const Container = styled('div')(compose(position, layout), { height: '100%' });
@@ -149,7 +150,12 @@ export const Markdown = forwardRef<
         .use(remark2rehype, { allowDangerousHtml: true })
         .use(remarkRaw)
         .use(rehype2react, {
-          createElement,
+          // @ts-expect-error: the react types are missing.
+          Fragment: production.Fragment,
+          // @ts-expect-error: the react types are missing.
+          jsx: production.jsx,
+          // @ts-expect-error: the react types are missing.
+          jsxs: production.jsxs,
           components: componentMapWithPassedThroughProps
         });
 
@@ -172,7 +178,10 @@ export const Markdown = forwardRef<
         .use(remark2rehype, { allowDangerousHtml: true })
         .use(remarkRaw)
         .use(rehype2react, {
-          createElement,
+          // @ts-expect-error: the react types are missing.
+          jsx: production.jsx,
+          // @ts-expect-error: the react types are missing.
+          jsxs: production.jsxs,
           Fragment: Notes
         });
 
